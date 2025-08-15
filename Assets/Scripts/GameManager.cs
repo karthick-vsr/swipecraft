@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -14,6 +15,9 @@ public class GameManager : MonoBehaviour
     private List<CardView> allCards = new List<CardView>();
     private Queue<CardView> flippedQueue = new Queue<CardView>();
     private bool checkingMatch = false;
+    private int turns = 0;
+    private int matches = 0;
+     public static Action<int, int> OnScoreChanged;
 
     private void Awake()
     {
@@ -43,6 +47,8 @@ public class GameManager : MonoBehaviour
 
         clickedCard.FlipCard(true); 
         flippedQueue.Enqueue(clickedCard);
+        turns++;
+         OnScoreChanged?.Invoke(matches, turns);
 
         if (!checkingMatch && flippedQueue.Count >= 2)
             StartCoroutine(ProcessMatches());
@@ -63,6 +69,9 @@ public class GameManager : MonoBehaviour
 
             if (match)
             {
+                 matches++; 
+                 OnScoreChanged?.Invoke(matches, turns);
+
                 float matchDuration = 0.3f;
                 StartCoroutine(ScaleAndDisable(firstCard, matchDuration));
                 StartCoroutine(ScaleAndDisable(secondCard, matchDuration));
