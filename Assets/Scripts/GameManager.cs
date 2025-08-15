@@ -150,16 +150,17 @@ public class GameManager : MonoBehaviour
     private IEnumerator LevelCompleteCoroutine()
     {
         // Show Level Complete popup
-        if (levelCompletePanel != null)
-            levelCompletePanel.SetActive(true);
+
 
         // Optional: play level complete sound or animation here
 
         // Wait 2 seconds
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
+           if (levelCompletePanel != null)
+            levelCompletePanel.SetActive(true);
 
         // Load Menu Scene
-       // ResetLevel();
+        // ResetLevel();
     }
     public void ResetLevel()
 {
@@ -168,6 +169,8 @@ public class GameManager : MonoBehaviour
     turns = 0;
     combo = 0;
     CurrentLevel++;
+    SaveLevelSystem.SaveLevel(CurrentLevel);
+
 
     // Reload current scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
