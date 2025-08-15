@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,8 +19,12 @@ public class GameManager : MonoBehaviour
     private int turns = 0;
     private int matches = 0;
     private int combo = 0;
-    public static event System.Action<int, int, int> OnScoreChanged; 
-    private bool lastTurnWasMatch = false; 
+    public static event System.Action<int, int, int> OnScoreChanged;
+    private bool lastTurnWasMatch = false;
+    private int totalPairs;
+    public static int CurrentLevel;
+    [SerializeField] GameObject levelCompletePanel;
+
 
     private void Awake()
     {
@@ -50,7 +55,8 @@ public class GameManager : MonoBehaviour
         clickedCard.FlipCard(true);
         flippedQueue.Enqueue(clickedCard);
         turns++;
-        OnScoreChanged?.Invoke(matches, turns,combo);
+        OnScoreChanged?.Invoke(matches, turns, combo);
+        SoundManager.Instance.PlayClickSound();
 
         if (!checkingMatch && flippedQueue.Count >= 2)
             StartCoroutine(ProcessMatches());
@@ -78,7 +84,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                 RegisterMatch(false);
+                RegisterMatch(false);
                 // Flip back asynchronously
                 StartCoroutine(firstCard.FlipCardCoroutine(false));
                 StartCoroutine(secondCard.FlipCardCoroutine(false));
@@ -108,25 +114,62 @@ public class GameManager : MonoBehaviour
         card.backImage.enabled = false;
         card.onCardClicked = null;
     }
-     public void RegisterMatch(bool isMatch)
+    public void RegisterMatch(bool isMatch)
     {
         turns++;
 
         if (isMatch)
         {
             matches++;
+            if (matches >= totalPairs)
+            {
+                Debug.Log("Level complted****");
+                StartCoroutine(LevelCompleteCoroutine());
+            }
+
+
             if (lastTurnWasMatch)
             {
-                combo++; 
+                combo++;
             }
-           
+            SoundManager.Instance.PlayMatchSound();
             lastTurnWasMatch = true;
         }
         else
         {
+            SoundManager.Instance.PlayMissSound();
             lastTurnWasMatch = false;
         }
 
         OnScoreChanged?.Invoke(matches, turns, combo);
     }
+    public void SetTotalPairs(int totalPairs)
+    {
+        this.totalPairs = totalPairs;
+    }
+    private IEnumerator LevelCompleteCoroutine()
+    {
+        // Show Level Complete popup
+        if (levelCompletePanel != null)
+            levelCompletePanel.SetActive(true);
+
+        // Optional: play level complete sound or animation here
+
+        // Wait 2 seconds
+        yield return new WaitForSeconds(3f);
+
+        // Load Menu Scene
+       // ResetLevel();
+    }
+    public void ResetLevel()
+{
+    // If GameManager is persistent, reset its variables
+    matches = 0;
+    turns = 0;
+    combo = 0;
+    CurrentLevel++;
+
+    // Reload current scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+}
 }

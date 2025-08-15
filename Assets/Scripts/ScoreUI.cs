@@ -4,9 +4,10 @@ using UnityEngine.UI;
 
 public class ScoreUI : MonoBehaviour
 {
-    public TMP_Text matchesText;
-    public TMP_Text turnsText;
-    public TMP_Text comobTxt;
+    [SerializeField] TMP_Text matchesText;
+    [SerializeField] TMP_Text turnsText;
+    [SerializeField] TMP_Text comobTxt;
+   
 
     private void Start()
     {

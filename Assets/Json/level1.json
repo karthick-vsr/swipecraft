@@ -1,0 +1,11 @@
+{
+  "level": 1,
+  "rows": 2,
+  "columns": 2,
+  "cards": [
+    {"id": "card1", "fruit": "lemon"},
+    {"id": "card2", "fruit": "orange"},
+    {"id": "card3", "fruit": "lemon"},
+    {"id": "card4", "fruit": "orange"}
+  ]
+}

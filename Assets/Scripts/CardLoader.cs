@@ -7,18 +7,32 @@ using UnityEngine.UI;
 
 public class CardLoader : MonoBehaviour
 {
-    public GameObject cardPrefab;      
-    public Transform gridParent;      
-    public TextAsset levelJson;      
+    [SerializeField] GameObject cardPrefab;      
+    [SerializeField] Transform gridParent;      
+    [SerializeField] TextAsset[] levelJson;      
+      
 
     void Start()
     {
-        LoadLevel(levelJson.text);
+          LoadLevel(GameManager.CurrentLevel-1);
     }
 
-    void LoadLevel(string json)
+    void LoadLevel(int levelIndex)
     {
-        LevelData level = JsonUtility.FromJson<LevelData>(json);
+        if (levelJson == null || levelJson.Length == 0)
+        {
+            Debug.LogError("No level JSONs assigned!");
+            return;
+        }
+
+        if (levelIndex < 0 || levelIndex >= levelJson.Length)
+        {
+            Debug.LogError("Level index out of range!");
+            return;
+        }
+        TextAsset json = levelJson[levelIndex];
+        LevelData level = JsonUtility.FromJson<LevelData>(json.text);
+        GameManager.Instance.SetTotalPairs(level.cards.Length / 2);
 
         GridLayoutGroup grid = gridParent.GetComponent<GridLayoutGroup>();
         if (grid != null)

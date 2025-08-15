@@ -3,42 +3,30 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour
 {
 
-    public AudioSource bgSource;
-    public AudioSource sfxSource;
+    [SerializeField] AudioSource bgSource;
+    [SerializeField] AudioSource sfxSource;
 
-    public AudioClip bgMusic;
-    public AudioClip matchClip;
-    public AudioClip missClip;
+    [SerializeField] AudioClip bgMusic;
+    [SerializeField] AudioClip matchClip;
+    [SerializeField] AudioClip missClip;
+    [SerializeField] AudioClip clickClip;
 
-    private int previousMatches = 0; // only here
-    private int previousTurns = 0;   // only here
+    public static SoundManager Instance { get; private set; }
 
-  
+
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else { Destroy(gameObject); return; }
+    }
+
+
     private void Start()
     {
         PlayBackgroundMusic();
-        GameManager.OnScoreChanged += HandleScoreChanged;
     }
 
-    private void OnDisable()
-    {
-        GameManager.OnScoreChanged -= HandleScoreChanged;
-    }
-
-    private void HandleScoreChanged(int matches, int turns,int combo)
-    {
-        if (matches > previousMatches)
-        {
-            PlaySFX(matchClip);
-        }
-        else if (turns > previousTurns)
-        {
-            PlaySFX(missClip);
-        }
-
-        previousMatches = matches;
-        previousTurns = turns;
-    }
 
     private void PlayBackgroundMusic()
     {
@@ -50,11 +38,25 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    private void PlaySFX(AudioClip clip)
+    public void PlayMatchSound()
     {
-        if (sfxSource != null && clip != null)
+        if (sfxSource != null)
         {
-            sfxSource.PlayOneShot(clip);
+            sfxSource.PlayOneShot(matchClip);
+        }
+    }
+    public void PlayMissSound()
+    {
+        if (sfxSource != null)
+        {
+            sfxSource.PlayOneShot(missClip);
+        }
+    }
+    public void PlayClickSound()
+    {
+        if (sfxSource != null )
+        {
+            sfxSource.PlayOneShot(clickClip);
         }
     }
 }
