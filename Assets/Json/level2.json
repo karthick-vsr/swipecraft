@@ -6,8 +6,8 @@
     {"id": "card1", "fruit": "pineapple"},
     {"id": "card2", "fruit": "lemon"},
     {"id": "card3", "fruit": "orange"},
-    {"id": "card4", "fruit": "pineapple"},
-    {"id": "card5", "fruit": "lemon"},
-    {"id": "card6", "fruit": "orange"}
+    {"id": "card4", "fruit": "orange"},
+    {"id": "card5", "fruit": "pineapple"},
+    {"id": "card6", "fruit": "lemon"}
   ]
 }
