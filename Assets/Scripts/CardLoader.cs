@@ -10,6 +10,7 @@ public class CardLoader : MonoBehaviour
     [SerializeField] GameObject cardPrefab;      
     [SerializeField] Transform gridParent;      
     [SerializeField] TextAsset[] levelJson;      
+    //public DynamicGrid dynamicGrid;
       
 
     void Start()
@@ -32,6 +33,8 @@ public class CardLoader : MonoBehaviour
         }
         TextAsset json = levelJson[levelIndex];
         LevelData level = JsonUtility.FromJson<LevelData>(json.text);
+         // dynamicGrid.SetupGridFromLevel(level);
+
         GameManager.Instance.SetTotalPairs(level.cards.Length / 2);
 
         GridLayoutGroup grid = gridParent.GetComponent<GridLayoutGroup>();

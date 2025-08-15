@@ -1603,6 +1603,7 @@ GameObject:
   - component: {fileID: 1637465273}
   - component: {fileID: 1637465275}
   - component: {fileID: 1637465274}
+  - component: {fileID: 1637465276}
   m_Layer: 5
   m_Name: CardGrid
   m_TagString: Untagged
@@ -1665,9 +1666,27 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 115, y: 115}
-  m_Spacing: {x: 60, y: 60}
+  m_Spacing: {x: 40, y: 40}
   m_Constraint: 0
   m_ConstraintCount: 7
+--- !u!114 &1637465276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1637465272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcf8bda41591d45cc89fd254a6a26088, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spacing: {x: 10, y: 10}
+  padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
 --- !u!1 &1703728106
 GameObject:
   m_ObjectHideFlags: 0

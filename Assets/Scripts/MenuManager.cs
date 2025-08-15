@@ -9,7 +9,7 @@ public class MenuManager : MonoBehaviour
 
     private void Start()
     {
-        
+       // SaveLevelSystem.ResetProgress();
         level_no.text = "Level: " + SaveLevelSystem.LoadLevel();
     }
 
