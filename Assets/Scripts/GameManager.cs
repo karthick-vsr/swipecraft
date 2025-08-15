@@ -17,7 +17,9 @@ public class GameManager : MonoBehaviour
     private bool checkingMatch = false;
     private int turns = 0;
     private int matches = 0;
-     public static Action<int, int> OnScoreChanged;
+    private int combo = 0;
+    public static event System.Action<int, int, int> OnScoreChanged; 
+    private bool lastTurnWasMatch = false; 
 
     private void Awake()
     {
@@ -45,10 +47,10 @@ public class GameManager : MonoBehaviour
     {
         if (clickedCard.IsFlipped()) return;
 
-        clickedCard.FlipCard(true); 
+        clickedCard.FlipCard(true);
         flippedQueue.Enqueue(clickedCard);
         turns++;
-         OnScoreChanged?.Invoke(matches, turns);
+        OnScoreChanged?.Invoke(matches, turns,combo);
 
         if (!checkingMatch && flippedQueue.Count >= 2)
             StartCoroutine(ProcessMatches());
@@ -69,21 +71,20 @@ public class GameManager : MonoBehaviour
 
             if (match)
             {
-                 matches++; 
-                 OnScoreChanged?.Invoke(matches, turns);
-
+                RegisterMatch(true);
                 float matchDuration = 0.3f;
                 StartCoroutine(ScaleAndDisable(firstCard, matchDuration));
                 StartCoroutine(ScaleAndDisable(secondCard, matchDuration));
             }
             else
             {
+                 RegisterMatch(false);
                 // Flip back asynchronously
                 StartCoroutine(firstCard.FlipCardCoroutine(false));
                 StartCoroutine(secondCard.FlipCardCoroutine(false));
             }
 
-            yield return new WaitForSeconds(0.1f); 
+            yield return new WaitForSeconds(0.1f);
         }
 
         checkingMatch = false;
@@ -106,5 +107,26 @@ public class GameManager : MonoBehaviour
         card.frontImage.enabled = false;
         card.backImage.enabled = false;
         card.onCardClicked = null;
+    }
+     public void RegisterMatch(bool isMatch)
+    {
+        turns++;
+
+        if (isMatch)
+        {
+            matches++;
+            if (lastTurnWasMatch)
+            {
+                combo++; 
+            }
+           
+            lastTurnWasMatch = true;
+        }
+        else
+        {
+            lastTurnWasMatch = false;
+        }
+
+        OnScoreChanged?.Invoke(matches, turns, combo);
     }
 }

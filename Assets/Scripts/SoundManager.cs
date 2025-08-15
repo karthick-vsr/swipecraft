@@ -25,7 +25,7 @@ public class SoundManager : MonoBehaviour
         GameManager.OnScoreChanged -= HandleScoreChanged;
     }
 
-    private void HandleScoreChanged(int matches, int turns)
+    private void HandleScoreChanged(int matches, int turns,int combo)
     {
         if (matches > previousMatches)
         {
