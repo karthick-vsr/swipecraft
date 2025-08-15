@@ -1,0 +1,19 @@
+{
+  "level": 1,
+ "rows": 4,
+  "columns": 4,
+  "cards": [
+    {"id": "card12", "fruit": "apple_green"},
+    {"id": "card1", "fruit": "apple"},
+    {"id": "card2", "fruit": "banana"},
+    {"id": "card3", "fruit": "cherry"},
+    {"id": "card4", "fruit": "watermelon"},
+    {"id": "card5", "fruit": "apple"},
+    {"id": "card6", "fruit": "eggs"},
+    {"id": "card7", "fruit": "banana"},
+    {"id": "card8", "fruit": "cherry"},
+    {"id": "card9", "fruit": "watermelon"},
+    {"id": "card10", "fruit": "eggs"},
+    {"id": "card11", "fruit": "apple_green"}
+  ]
+}
