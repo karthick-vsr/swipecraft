@@ -11,20 +11,14 @@ public class GameManager : MonoBehaviour
     public float previewTime = 2f;
     public float flipBackDelay = 1f;
 
-    private List<CardView> allCards = new List<CardView>(); // Private list
-    private CardView firstCard, secondCard;
+    private List<CardView> allCards = new List<CardView>();
+    private Queue<CardView> flippedQueue = new Queue<CardView>();
+    private bool checkingMatch = false;
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject); 
-            return;
-        }
+        if (Instance == null) Instance = this;
+        else { Destroy(gameObject); return; }
     }
 
     public void RegisterCard(CardView card)
@@ -32,87 +26,76 @@ public class GameManager : MonoBehaviour
         if (!allCards.Contains(card))
         {
             allCards.Add(card);
-            card.onCardClicked += OnCardClicked; 
+            card.onCardClicked += OnCardClicked;
         }
     }
 
     public IEnumerator PreviewCards()
     {
-        foreach (var card in allCards)
-            card.ShowFront();
-
+        foreach (var card in allCards) card.ShowFront();
         yield return new WaitForSeconds(previewTime);
-
-        foreach (var card in allCards)
-            card.HideFront();
+        foreach (var card in allCards) card.HideFront();
     }
 
     private void OnCardClicked(CardView clickedCard)
     {
-        Debug.Log("on card clicked *****");
         if (clickedCard.IsFlipped()) return;
 
-        clickedCard.ShowFront();
+        clickedCard.FlipCard(true); 
+        flippedQueue.Enqueue(clickedCard);
 
-        if (firstCard == null)
-        {
-            firstCard = clickedCard;
-        }
-        else
-        {
-            secondCard = clickedCard;
-            StartCoroutine(CheckMatch());
-        }
+        if (!checkingMatch && flippedQueue.Count >= 2)
+            StartCoroutine(ProcessMatches());
     }
 
-   
-   private bool canSelect = true; 
-
-private IEnumerator CheckMatch()
-{
-    canSelect = false; 
-
-    yield return new WaitForSeconds(flipBackDelay);
-
-    if (firstCard != null && secondCard != null)
+    private IEnumerator ProcessMatches()
     {
-        bool match = firstCard.frontImage.sprite == secondCard.frontImage.sprite;
+        checkingMatch = true;
 
-        if (match)
+        while (flippedQueue.Count >= 2)
         {
-            float matchDuration = 0.3f;
+            CardView firstCard = flippedQueue.Dequeue();
+            CardView secondCard = flippedQueue.Dequeue();
 
-            firstCard.transform.DOScale(Vector3.zero, matchDuration).SetEase(Ease.InBack)
-                .OnComplete(() =>
-                {
-                    firstCard.frontImage.enabled = false;
-                    firstCard.backImage.enabled = false;
-                    firstCard.onCardClicked = null; 
-                });
+            yield return new WaitForSeconds(flipBackDelay);
 
-            secondCard.transform.DOScale(Vector3.zero, matchDuration).SetEase(Ease.InBack)
-                .OnComplete(() =>
-                {
-                    secondCard.frontImage.enabled = false;
-                    secondCard.backImage.enabled = false;
-                    secondCard.onCardClicked = null; 
-                });
+            bool match = firstCard.frontImage.sprite == secondCard.frontImage.sprite;
 
+            if (match)
+            {
+                float matchDuration = 0.3f;
+                StartCoroutine(ScaleAndDisable(firstCard, matchDuration));
+                StartCoroutine(ScaleAndDisable(secondCard, matchDuration));
+            }
+            else
+            {
+                // Flip back asynchronously
+                StartCoroutine(firstCard.FlipCardCoroutine(false));
+                StartCoroutine(secondCard.FlipCardCoroutine(false));
+            }
+
+            yield return new WaitForSeconds(0.1f); 
         }
-        else
-        {
-            firstCard.FlipCard(false);
-            secondCard.FlipCard(false);
-        }
+
+        checkingMatch = false;
     }
 
-    yield return new WaitForSeconds(0.35f); 
-    firstCard = null;
-    secondCard = null;
+    private IEnumerator ScaleAndDisable(CardView card, float duration)
+    {
+        Vector3 startScale = card.transform.localScale;
+        Vector3 endScale = Vector3.zero;
+        float elapsed = 0f;
 
-    canSelect = true;
-}
+        while (elapsed < duration)
+        {
+            card.transform.localScale = Vector3.Lerp(startScale, endScale, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
 
-
-
+        card.transform.localScale = endScale;
+        card.frontImage.enabled = false;
+        card.backImage.enabled = false;
+        card.onCardClicked = null;
+    }
 }
