@@ -22,8 +22,8 @@ public class ScoreUI : MonoBehaviour
     private void UpdateScore(int matches, int turns, int combo)
     {
         Debug.Log("update score *****");
-        if (matchesText != null) matchesText.text = "Matches: " + matches;
-        if (turnsText != null) turnsText.text = "Turns: " + turns;
-        if (comobTxt != null) comobTxt.text = "Combo: " + combo;
+        if (matchesText != null) matchesText.text = "Matches\n" + matches;
+        if (turnsText != null) turnsText.text = "Turns\n" + turns;
+        if (comobTxt != null) comobTxt.text = "Combo\n" + combo;
     }
 }

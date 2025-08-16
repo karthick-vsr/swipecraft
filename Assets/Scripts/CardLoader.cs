@@ -33,20 +33,37 @@ public class CardLoader : MonoBehaviour
         }
         TextAsset json = levelJson[levelIndex];
         LevelData level = JsonUtility.FromJson<LevelData>(json.text);
-         // dynamicGrid.SetupGridFromLevel(level);
 
         GameManager.Instance.SetTotalPairs(level.cards.Length / 2);
-
         GridLayoutGroup grid = gridParent.GetComponent<GridLayoutGroup>();
         if (grid != null)
         {
             grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
             grid.constraintCount = level.columns;
-            grid.startAxis = GridLayoutGroup.Axis.Horizontal; // row-wise
-        }
+            grid.startAxis = GridLayoutGroup.Axis.Horizontal;
 
-        foreach (Transform child in gridParent)
-            Destroy(child.gameObject);
+            grid.cellSize = new Vector2(96f, 96f);
+
+            RectTransform gridRect = gridParent.GetComponent<RectTransform>();
+            float totalWidth = gridRect.rect.width - grid.padding.left - grid.padding.right;
+            float totalHeight = gridRect.rect.height - grid.padding.top - grid.padding.bottom;
+
+
+            float baseSpacing = 20f;
+      float spacingX = baseSpacing * Mathf.Max(1f, 4f / level.columns); 
+    float spacingY = baseSpacing * Mathf.Max(1f, 4f / level.rows);    
+
+    grid.spacing = new Vector2(spacingX, spacingY);
+
+  
+}
+
+
+
+    // Clear previous cards
+    foreach (Transform child in gridParent)
+        Destroy(child.gameObject);
+
 
         foreach (var card in level.cards)
         {

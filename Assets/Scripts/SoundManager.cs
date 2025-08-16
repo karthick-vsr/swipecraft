@@ -10,7 +10,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] AudioClip matchClip;
     [SerializeField] AudioClip missClip;
     [SerializeField] AudioClip clickClip;
-
+    [SerializeField] AudioClip winClip;
     public static SoundManager Instance { get; private set; }
 
 
@@ -54,9 +54,16 @@ public class SoundManager : MonoBehaviour
     }
     public void PlayClickSound()
     {
-        if (sfxSource != null )
+        if (sfxSource != null)
         {
             sfxSource.PlayOneShot(clickClip);
+        }
+    }
+    public void PlayWinSound()
+    {
+        if (sfxSource != null )
+        {
+            sfxSource.PlayOneShot(winClip);
         }
     }
 }

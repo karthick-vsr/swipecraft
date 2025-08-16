@@ -73,24 +73,35 @@ public IEnumerator FlipCardCoroutine(bool showFront, float duration = 0.25f)
     float halfDuration = duration / 2f;
 
     // Rotate Y 0 → 90°
-    for (float t = 0; t < halfDuration; t += Time.deltaTime)
+    float elapsed = 0f;
+    while (elapsed < halfDuration)
     {
-        float angle = Mathf.Lerp(0, 90, t / halfDuration);
-        transform.localRotation = Quaternion.Euler(0, angle, 0);
+        float angle = Mathf.Lerp(0f, 90f, elapsed / halfDuration);
+        transform.localRotation = Quaternion.Euler(0f, angle, 0f);
+        elapsed += Time.deltaTime;
         yield return null;
     }
+
+    // Ensure exact 90° at midpoint
+    transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
 
     // Swap front/back
     if (showFront) ShowFront();
     else HideFront();
 
     // Rotate Y 90 → 0°
-    for (float t = 0; t < halfDuration; t += Time.deltaTime)
+    elapsed = 0f;
+    while (elapsed < halfDuration)
     {
-        float angle = Mathf.Lerp(90, 0, t / halfDuration);
-        transform.localRotation = Quaternion.Euler(0, angle, 0);
+        float angle = Mathf.Lerp(90f, 0f, elapsed / halfDuration);
+        transform.localRotation = Quaternion.Euler(0f, angle, 0f);
+        elapsed += Time.deltaTime;
         yield return null;
     }
+
+    // Ensure final rotation
+    transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
 }
+
 
 }

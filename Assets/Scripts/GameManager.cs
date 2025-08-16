@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [Header("Game Settings")]
-    public float previewTime = 2f;
+    
     public float flipBackDelay = 1f;
 
     private List<CardView> allCards = new List<CardView>();
@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     public IEnumerator PreviewCards()
     {
         foreach (var card in allCards) card.ShowFront();
-        yield return new WaitForSeconds(previewTime);
+        yield return new WaitForSeconds(1);
         foreach (var card in allCards) card.HideFront();
     }
 
@@ -156,6 +156,7 @@ public class GameManager : MonoBehaviour
 
         // Wait 2 seconds
         yield return new WaitForSeconds(1f);
+         SoundManager.Instance.PlayWinSound();
            if (levelCompletePanel != null)
             levelCompletePanel.SetActive(true);
 
@@ -171,8 +172,16 @@ public class GameManager : MonoBehaviour
     CurrentLevel++;
     SaveLevelSystem.SaveLevel(CurrentLevel);
 
+        if (CurrentLevel > 3)
+        {
+            CurrentLevel = 1;
+            SceneManager.LoadScene("MenuScene");
+         
 
-    // Reload current scene
+
+        }
+        // Reload current scene
+    else
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 }
 }
